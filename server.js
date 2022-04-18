@@ -8,6 +8,9 @@ const app = express();
 app.use(express.urlencoded({ extended: true }));
 // parse incoming JSON data
 app.use(express.json());
+// middlware that instructs the server to make files readily available
+// this allows us to not have to make routes for js and css files in /public
+app.use(express.static('public'));
 
 const { animals } = require('./data/animals.json');
 
@@ -116,6 +119,23 @@ app.post('/api/animals', (req, res) => {
     }
 
     
+});
+
+// using '/' brings us to the root route of the server
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, './public/index.html')); //res.sendFile tells the route where to file the file and send it back to the client.
+});
+
+app.get('/animals', (req, res) => {
+    res.sendFile(path.join(__dirname, './public/animals.html'));
+});
+
+app.get('/zookeepers', (req, res) => {
+    res.sendFile(path.join(__dirname, './public/zookeepers.html'));
+});
+
+app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, './public/index.html')); // * acts as a wildcard for any route not prev defined will receive the homepage response
 });
 
 // listens for a connection on the given path
